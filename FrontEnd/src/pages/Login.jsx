@@ -19,21 +19,23 @@ export default function Login() {
     const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
 
-      const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      if (isLoading){
-        return;
-      }
+        if (isLoading) {
+          return;
+        }
+
       setIsLoading(true);
+
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/login/', formData);
         console.log("Success:", response.data);
         setSuccessMessage("Login successful!");
-        localStorage.setItem('accessToken', response.data.token.access);
-        localStorage.setItem('refreshToken', response.data.token.refresh);
+        localStorage.setItem('access_token', response.data.tokens.access);
+        localStorage.setItem('refresh_token', response.data.tokens.refresh);
 
       }catch (error) {
-        console.error("Error:", error.response?.data);
+        console.log("Error:", error.response?.data);
         if (error.response && error.response.data) {
           Object.keys(error.response.data).forEach(field => {
             const errorMessages = error.response.data[field];

@@ -30,7 +30,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return CustomUser.objects.create_user(password=password, **validated_data)
 
 class UserLoginSerializer(serializers.Serializer):
-     email = serializers.EmailField()
+     email = serializers.CharField()
      password = serializers.CharField(write_only=True)
 
      def validate(self, data):

@@ -1,0 +1,65 @@
+name: Update Mods of Server
+
+on:
+  push:
+    branches:
+    
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCES_KEY }}
+        aws-region: us-east-2
+    
+    - name: Apagar EC2
+      run: |
+          aws ec2 stop-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }}
+          echo "Instancia EC2 apagada."
+
+    - name: Esperar a que la instancia esté en 'stopped'
+      run: |
+          aws ec2 wait instance-stopped --instance-ids ${{ secrets.EC2_INSTANCE_ID }}
+          echo "La instancia EC2 está apagada."
+
+    - name: Prender EC2
+      run: |
+          aws ec2 start-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }}
+          echo "Instancia EC2 prendida."
+
+    - name: Esperar a que la instancia esté en 'running'
+      run: |
+          aws ec2 wait instance-running --instance-ids ${{ secrets.EC2_INSTANCE_ID }}
+          echo "La instancia EC2 está corriendo."
+
+    - name: Conexion y deploy de docker-compose en EC2
+      env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          USER_NAME: ${{ secrets.EC2_USERNAME }}
+      run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+
+          IP_ADDRESS=$(aws ec2 describe-instances \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text)
+    
+          echo "La IP pública de la instancia EC2 es: $IP_ADDRESS"
+
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} << 'EOF'
+
+          sudo dnf update -y
+          rm -rf MiSalaTecmilenio
+          git clone https://github.com/NaJaGa/MiSalaTecmilenio.git
+          cd MiSalaTecmilenio
+          docker-compose down
+          docker-compose build
+          docker-compose up 
+
+

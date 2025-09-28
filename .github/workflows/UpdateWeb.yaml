@@ -1,9 +1,9 @@
-name: Update Mods of Server
+name: Actualizar WEB MiSalaTecmilenio
 
 on:
   push:
     branches:
-    
+      - main
 
 jobs:
   deploy:
@@ -59,7 +59,8 @@ jobs:
           git clone https://github.com/NaJaGa/MiSalaTecmilenio.git
           cd MiSalaTecmilenio
           docker-compose down
+
           docker-compose build
-          docker-compose up 
+          docker-compose up -d
 
 

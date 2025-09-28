@@ -54,7 +54,7 @@ export default function Register() {
     
   return (
     <div className="register">
-      {error && <p styl e={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
       <h2>Register</h2>
         <form>

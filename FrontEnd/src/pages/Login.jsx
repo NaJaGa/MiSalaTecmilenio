@@ -28,7 +28,7 @@ export default function Login() {
       setIsLoading(true);
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login/', formData);
+        const response = await axios.post('http://3.20.76.36:8000/api/login/', formData);
         console.log("Success:", response.data);
         setSuccessMessage("Login successful!");
         localStorage.setItem('access_token', response.data.tokens.access);

@@ -49,7 +49,7 @@ export default function Home() {
       };
 
       await axios.post(
-        'http://127.0.0.1:8000/api/logout/',
+        'http://3.20.76.36:8000/api/logout/',
         { refresh: refreshToken },
         config // ✅ Aquí pasamos el token de acceso
       );

@@ -29,7 +29,7 @@ export default function Register() {
       }
       setIsLoading(true);
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/register/', formData);
+        const response = await axios.post('http://3.20.76.36:8000/api/register/', formData);
         console.log("Success:", response.data);
         setSuccessMessage("Registration successful!");
 

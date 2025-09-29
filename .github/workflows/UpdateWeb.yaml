@@ -45,23 +45,17 @@ jobs:
           USER_NAME: ${{ secrets.EC2_USERNAME }}
           EC2_IP: ${{ secrets.EC2_ELASTIC_IP }}
       run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo "$PRIVATE_KEY" > private_key
+          chmod 600 private_key
 
-
-
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${EC2_IP} << EOF
-
-
+          ssh -t -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${EC2_IP} << EOF
           sudo dnf update -y
           sudo rm -rf MiSalaTecmilenio
           git clone https://github.com/NaJaGa/MiSalaTecmilenio.git
-          
           cd MiSalaTecmilenio
           docker-compose down
-
-        
-          docker-compose build 
+          docker-compose build
           docker-compose up -d
           EOF
 
-
+          
